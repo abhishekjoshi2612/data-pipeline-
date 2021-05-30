@@ -1,4 +1,5 @@
 
+
 from datetime import date, timedelta,datetime
 import os
 import json
@@ -6,9 +7,10 @@ import random
     
 
 print("All Dag modules are ok ......")
+
 def file_maker(name,dates):
+    final_name = name + "@tribes.ai"
     name_of_file = name + "." +str(dates) + ".json"
-    name_of_file = open(name_of_file,"w")
     cur_sum = 0
     google_driver = random.randint(0,180)
     cur_sum = google_driver
@@ -21,15 +23,16 @@ def file_maker(name,dates):
     chromer = random.randint(0, min(480 - cur_sum,180))
     cur_sum = cur_sum + chromer
     spotifyer = random.randint(0,min(480 - cur_sum,180))
-  
-    my_json_data = {"user_id" : name + "@tribes.ai",
-                    "usage_date" : str(dates),
-                    "device" : {
-                        "os" : "ios",
-                        "brand" : "apple"
 
-                      },
-                      "usages":[
+  
+    my_json_data =  {"user_id" : final_name,
+                         "usage_date" : str(dates),
+                         "device" : {
+                             "os" : "ios",
+                             "brand" : "apple"
+
+                                     },
+                         "usages":[
 
                                 {
                                     "app_name" : "slack",
@@ -64,11 +67,16 @@ def file_maker(name,dates):
                                ]
 
                     }
-    with open(str(name_of_file),'r+') as file:
-        file_data = json.load(file)
-        file_data.update(my_json_data)
-        file.seek(0)
-        json.dump(file_data, file, indent = 4)
+
+    json_object = json.dumps(my_json_data,indent = 4)
+    with open(str(name_of_file),"w") as out_file:
+        out_file.write(json_object)
+
+  
+    
+    
+
+
     
     
 
