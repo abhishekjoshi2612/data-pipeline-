@@ -1,12 +1,17 @@
+try:
 
-
-from datetime import date, timedelta,datetime
-import os
-import json
-import random
+    from airflow import DAG
+    from airflow.operators.python_operator import PythonOperator
+    from airflow.utils.dates import days_ago
+    from datetime import date, timedelta,datetime
+    import os
+    import json
+    import random
     
 
 print("All Dag modules are ok ......")
+except Exception as e:
+    print("Error  {} ".format(e))
 
 def file_maker(name,dates):
     final_name = name + "@tribes.ai"
@@ -149,11 +154,27 @@ def checker():
     
 
 
-checker()
-create_today_files(date.today())
+with DAG(
+        dag_id="checker",
+        schedule_interval="@daily",
+        default_args={
+            "owner": "airflow",
+            "retries": 1,
+            "retry_delay": timedelta(minutes=20),
+            "start_date": days_ago(1),
+        },
+        catchup=False) as f:
 
+    checker = PythonOperator(
+        task_id="checker",
+        python_callable=checker,
+        
+    )
 
+    second_function_execute = PythonOperator(
+        task_id="create_today_files",
+        python_callable=create_today_files,
+        
+    )
 
-    
-
-
+checker >> create_today_files
