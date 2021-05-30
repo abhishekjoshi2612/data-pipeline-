@@ -1,4 +1,3 @@
-
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import date, timedelta,datetime
@@ -69,6 +68,7 @@ def file_maker(name,dates):
                     }
 
     json_object = json.dumps(my_json_data,indent = 4)
+    print(os.getcwd())
     with open(str(name_of_file),"w") as out_file:
         out_file.write(json_object)
 
@@ -123,7 +123,9 @@ def create_files():
         eily_30_days(start_date)
         abhishek_30_days(start_date)
         start_date += delta
-def create_today_files(dates):
+def create_today_files():
+    dates = date.today()
+    print("hello")
     vinit_today(dates)
     guilermo_today(dates)
     christian_today(dates)
@@ -145,6 +147,7 @@ def checker():
     if os.path.exists(('stored_30_days_files')) == False:
         create_last_days()
     
+    
 
     
 
@@ -162,14 +165,18 @@ with DAG(
 
     checker = PythonOperator(
         task_id="checker",
-        python_callable=checker
+        python_callable=checker,
+        provide_context=True,
         
     )
-
-    second_function_execute = PythonOperator(
+    create_today_files = PythonOperator(
         task_id="create_today_files",
-        python_callable=create_today_files
+        python_callable=create_today_files,
+        provide_context=True,
         
     )
 
-checker
+
+    
+
+checker >> create_today_files
