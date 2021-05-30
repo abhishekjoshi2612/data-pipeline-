@@ -15,7 +15,6 @@ def file_maker(name,dates):
     name_of_file = open(name_of_file,"w")
     
 
-    pass
 def vinit_30_days(dates):
     file_maker("vinit",dates)
 def guilermo_30_days(dates):
@@ -29,19 +28,19 @@ def eily_30_days(dates):
 def abhishek_30_days(dates):
     file_maker("abhishek",dates)
     
-def vinit_today():
+def vinit_today(dates):
     file_maker("vinit",dates)
     
-def guilermo_today():
+def guilermo_today(dates):
     file_maker("guilermo",dates)
     
-def christian_today():
+def christian_today(dates):
     file_maker("christian",dates)
     
-def eily_today():
+def eily_today(dates):
     file_maker("eily",dates)
     
-def abhishek_today():
+def abhishek_today(dates):
     file_maker("abhishek",dates)
     
 
@@ -50,13 +49,14 @@ def create_files():
 
     end_date = date.today()
     start_date = end_date - delta*30
-    for dates in range(start_date,end_date+delta):
-        vinit_30_days(dates)
-        guilermo_30_days(dates)
-        christian_30_days(dates)
-        eily_30_days(dates)
-        abhishek_30_days(dates)
-def create_today_files():
+    while start_date<end_date:
+        vinit_30_days(start_date)
+        guilermo_30_days(start_date)
+        christian_30_days(start_date)
+        eily_30_days(start_date)
+        abhishek_30_days(start_date)
+        start_date += delta
+def create_today_files(dates):
     vinit_today(dates)
     guilermo_today(dates)
     christian_today(dates)
@@ -82,8 +82,8 @@ def checker():
     
 
 
-first_job()
-
+checker()
+create_today_files(date.today())
 
 
     
