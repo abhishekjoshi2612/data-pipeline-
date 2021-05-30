@@ -11,6 +11,10 @@ try:
 except Exception as e:
     print("Error  {} ".format(e))
 def file_maker(name,dates):
+    name_of_file = name + "." +str(dates) + ".json"
+    name_of_file = open(name_of_file,"w")
+    
+
     pass
 def vinit_30_days(dates):
     file_maker("vinit",dates)
