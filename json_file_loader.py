@@ -2,14 +2,13 @@ try:
 
     from airflow import DAG
     from airflow.operators.python_operator import PythonOperator
-    from airflow.utils.dates import days_ago
+    
     from datetime import date, timedelta,datetime
     import os
     import json
     import random
     
 
-print("All Dag modules are ok ......")
 except Exception as e:
     print("Error  {} ".format(e))
 
@@ -155,13 +154,13 @@ def checker():
 
 
 with DAG(
-        dag_id="checker",
+        dag_id="first_loader",
         schedule_interval="@daily",
         default_args={
             "owner": "airflow",
             "retries": 1,
             "retry_delay": timedelta(minutes=20),
-            "start_date": days_ago(1),
+            "start_date": datetime(2021, 1, 1),
         },
         catchup=False) as f:
 
