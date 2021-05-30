@@ -1,16 +1,12 @@
-try:
 
-    from airflow import DAG
-    from airflow.operators.python_operator import PythonOperator
-    
-    from datetime import date, timedelta,datetime
-    import os
-    import json
-    import random
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+from datetime import date, timedelta,datetime
+import os
+import json
+import random
     
 
-except Exception as e:
-    print("Error  {} ".format(e))
 
 def file_maker(name,dates):
     final_name = name + "@tribes.ai"
@@ -154,7 +150,7 @@ def checker():
 
 
 with DAG(
-        dag_id="first_loader",
+        dag_id="json_loader",
         schedule_interval="@daily",
         default_args={
             "owner": "airflow",
@@ -166,14 +162,14 @@ with DAG(
 
     checker = PythonOperator(
         task_id="checker",
-        python_callable=checker,
+        python_callable=checker
         
     )
 
     second_function_execute = PythonOperator(
         task_id="create_today_files",
-        python_callable=create_today_files,
+        python_callable=create_today_files
         
     )
 
-checker >> create_today_files
+checker
