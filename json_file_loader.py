@@ -25,7 +25,7 @@ def file_maker(name,dates):
 
   
     my_json_data =  {"user_id" : final_name,
-                         "usage_date" : str(dates),
+                         "usages_date" : str(dates),
                          "device" : {
                              "os" : "ios",
                              "brand" : "apple"
