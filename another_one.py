@@ -36,7 +36,7 @@ class data_processor:
     
     @staticmethod
     def for_users(tx,data):
-        
+        print("yes its running")
         
         
         result = tx.run("CREATE (u:user{IdMaster: $user_id})  "
@@ -66,7 +66,8 @@ class data_processor:
    
 
 
-if __name__ == "__main__":
+def runit():
+
     intialize = data_processor("bolt://localhost:7687", "neo4j", "a")
     to_process = worker()
     intialize.fire_up(to_process)
