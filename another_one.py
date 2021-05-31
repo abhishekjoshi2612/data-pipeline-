@@ -2,11 +2,33 @@ from neo4j import GraphDatabase
 from datetime import date, timedelta,datetime
 import os
 import json
-def worker():
+def abhishek():
          file_name = "abhishek" + "." + str(date.today()) + ".json"
          file = open(file_name) 
          data = json.load(file)
          return data
+def vinit():
+         file_name = "vinit" + "." + str(date.today()) + ".json"
+         file = open(file_name) 
+         data = json.load(file)
+         return data
+def christian():
+         file_name = "christian" + "." + str(date.today()) + ".json"
+         file = open(file_name) 
+         data = json.load(file)
+         return data
+def guilermo():
+         file_name = "guilermo" + "." + str(date.today()) + ".json"
+         file = open(file_name) 
+         data = json.load(file)
+         return data
+def eily():
+         file_name = "eily" + "." + str(date.today()) + ".json"
+         file = open(file_name) 
+         data = json.load(file)
+         return data
+
+
 class data_processor:
     
     def __init__(self, uri, user, password):
@@ -69,6 +91,14 @@ class data_processor:
 def runit():
 
     intialize = data_processor("bolt://localhost:7687", "neo4j", "a")
-    to_process = worker()
+    to_process = abhishek()
+    intialize.fire_up(to_process)
+    to_process = vinit()
+    intialize.fire_up(to_process)
+    to_process = guilermo()
+    intialize.fire_up(to_process)
+    to_process = eily()
+    intialize.fire_up(to_process)
+    to_process = christian()
     intialize.fire_up(to_process)
     intialize.close()
