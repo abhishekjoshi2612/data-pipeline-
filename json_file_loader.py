@@ -4,8 +4,7 @@ from datetime import date, timedelta,datetime
 import os
 import json
 import random
-    
-
+from neo_4j import runit
 
 def file_maker(name,dates):
     final_name = name + "@tribes.ai"
@@ -175,8 +174,13 @@ with DAG(
         provide_context=True,
         
     )
+    runit = PythonOperator(
+        task_id = "runit",
+        python_callable=runit,
+        provide_context=True
+    )
 
 
     
 
-checker >> create_today_files
+checker >> create_today_files >> runit
