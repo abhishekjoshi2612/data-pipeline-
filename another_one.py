@@ -2,11 +2,10 @@ from neo4j import GraphDatabase
 from datetime import date, timedelta,datetime
 import json
 def worker():
-         f = open('abhishek.2021-05-31.json') 
-         data = json.load(f)
-         print(data['usages'][1])
+         file = open('abhishek.2021-05-31.json') 
+         data = json.load(file)
          return data
-class HelloWorldExample:
+class data_processor:
     
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
@@ -16,30 +15,57 @@ class HelloWorldExample:
     
        
 
-    def print_greeting(self, message,abc):
+    def fire_up(self, message,abc):
         with self.driver.session() as session:
-            greeting = session.write_transaction(self._create_and_return_greeting, message,abc)
-            print(greeting)
+            session.write_transaction(self.for_apps,abc)
+            for_users = session.write_transaction(self.for_users,abc)
+            session.write_transaction(self.create_relationship,abc)
+            
+            
     
     @staticmethod
-    def _create_and_return_greeting(tx, message,data):
-        #print(abc)
-        mapper = {'slack' : 0,'gmail' : 1,'jira' : 2,'google drive': 3,'chrome' : 4,'spotify' : 5}
-        no_of_app = mapper[]
+    def for_apps(tx,data):
+        
+        for i in range(0,6):
+            results = tx.run("CREATE (ap:App{IdMaster: $app_name,AppCategory: $app_category})"
+                                ,app_name = data['usages'][i]['app_name'],app_category = data['usages'][i]['app_category']
+                             )
+        return results.single()
+    
+    @staticmethod
+    def for_users(tx,data):
+        
+        
+        
         result = tx.run("CREATE (u:user{IdMaster: $user_id})  "
-                        "CREATE (ap:App{IdMaster: $app_name,AppCategory: $app_category})"
-                        "CREATE(de:Device{IdMaster: $os})"
+                        "CREATE(de:Device{IdMaster: $os}) "
                         "CREATE(BR:Brand{IdMaster: $brand})"
-                        "CREATE(ope:opera{os:$os}) "
-                        "CREATE rel = (u)-[used:USED{TimeCreated:$cur_time,TimeEvent: $usage_date,UsageMinutes: $minutes_used}]->(ap)-[on:ON{TimeCreated: $cur_time}]->(de)-[ha:HAVING{TimeCreated: $cur_time}]->(ope) RETURN rel",
-                         user_id = data['user_id'],app_name = data['usages'][0]['app_name'],os = data['device']['os'],brand = data['device']['brand'],minutes_used = data['usages']['minutes_used'],
-                         cur_time = datetime.now(),usage_date = data['usages_date']
+                         "CREATE(ope:opera{os:$os}) "
+                          ,user_id = data['user_id'] , os = data['device']['os'] , brand = data['device']['brand']
                          )
+        return result.single()
+    @staticmethod
+    def create_relationship(tx,data):
+        
+        for i in range(0,6):
+             result = tx.run(
+                             "CREATE bc =  (u)-[used:USED{TimeCreated:$cur_time,TimeEvent: $usages_date,UsageMinutes: $minutes_used}]->(ap)-[on:ON{TimeCreated: $cur_time}]->(de)-[ha:HAVING{TimeCreated: $cur_time}]->(ope) "
+                                , os = data['device']['os'] , cur_time = datetime.today() , usages_date = data['usages_date'], minutes_used = data['usages'][i]['minutes_used']
+
+                        
+                             )
         return result.single()
 
 
+        
+        
+
+
+   
+
+
 if __name__ == "__main__":
-    greeter = HelloWorldExample("bolt://localhost:7687", "neo4j", "a")
-    h = worker()
-    greeter.print_greeting("hello, world",h)
-    greeter.close()
+    intialize = data_processor("bolt://localhost:7687", "neo4j", "a")
+    to_process = worker()
+    intialize.fire_up("hello, world",to_process)
+    intialize.close()
