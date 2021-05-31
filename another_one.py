@@ -1,8 +1,10 @@
 from neo4j import GraphDatabase
 from datetime import date, timedelta,datetime
+import os
 import json
 def worker():
-         file = open('abhishek.2021-05-31.json') 
+         file_name = "abhishek" + "." + str(date.today()) + ".json"
+         file = open(file_name) 
          data = json.load(file)
          return data
 class data_processor:
@@ -15,10 +17,10 @@ class data_processor:
     
        
 
-    def fire_up(self, message,abc):
+    def fire_up(self, abc):
         with self.driver.session() as session:
             session.write_transaction(self.for_apps,abc)
-            for_users = session.write_transaction(self.for_users,abc)
+            session.write_transaction(self.for_users,abc)
             session.write_transaction(self.create_relationship,abc)
             
             
@@ -67,5 +69,5 @@ class data_processor:
 if __name__ == "__main__":
     intialize = data_processor("bolt://localhost:7687", "neo4j", "a")
     to_process = worker()
-    intialize.fire_up("hello, world",to_process)
+    intialize.fire_up(to_process)
     intialize.close()
