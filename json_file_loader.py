@@ -164,7 +164,7 @@ def checker():
 
 
 with DAG(
-        dag_id="json_loader",
+        dag_id="json_file_maker",
         schedule_interval="@daily",
         default_args={
             "owner": "airflow",
