@@ -3,7 +3,7 @@ from airflow.operators.python_operator import PythonOperator
 from datetime import date, timedelta,datetime
 import os
 import json
-import 
+import random
 #importing a job to run from another file
 from neo_4j import runit
 
@@ -16,6 +16,7 @@ def file_maker(name,dates):
     #assigning values to minute used variable for apps
     google_driver = random.randint(0,180)
     cur_sum = google_driver
+    #using clever trick here so that values always remain between 0 to 180 and sum to 480 or less
     slacker = random.randint(0,min(480 - cur_sum,180))
     cur_sum = cur_sum + slacker
     gmailer = random.randint(0, min(480 - cur_sum,180))
@@ -71,6 +72,7 @@ def file_maker(name,dates):
                     }
 
     json_object = json.dumps(my_json_data,indent = 4)
+    #used for finding where your current json files are stored
     print(os.getcwd())
     with open(str(name_of_file),"w") as out_file:
         out_file.write(json_object)
@@ -130,7 +132,7 @@ def create_files():
 #this function get called for creating file containing today date        
 def create_today_files():
     dates = date.today()
-    print("hello")
+    #print("hello")
     vinit_today(dates)
     guilermo_today(dates)
     christian_today(dates)
