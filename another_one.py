@@ -2,6 +2,7 @@ from neo4j import GraphDatabase
 from datetime import date, timedelta,datetime
 import os
 import json
+#functions for loading and sending data for processing into neo4j database
 def abhishek():
          file_name = "abhishek" + "." + str(date.today()) + ".json"
          file = open(file_name) 
@@ -28,9 +29,9 @@ def eily():
          data = json.load(file)
          return data
 
-
+#class which processes or intialize data into neo4j db
 class data_processor:
-    
+#intialize function which takes password and username
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
@@ -38,18 +39,18 @@ class data_processor:
         self.driver.close()
     
        
-
-    def fire_up(self, abc):
+#function for running all the transactions first generating nodes for apps then for users then create relationship 
+    def fire_up(self, data):
         with self.driver.session() as session:
-            session.write_transaction(self.for_apps,abc)
-            session.write_transaction(self.for_users,abc)
-            session.write_transaction(self.create_relationship,abc)
+            session.write_transaction(self.for_apps,data)
+            session.write_transaction(self.for_users,data)
+            session.write_transaction(self.create_relationship,data)
             
             
     
     @staticmethod
     def for_apps(tx,data):
-        
+    #create nodes for all 6 apps
         for i in range(0,6):
             results = tx.run("CREATE (ap:App{IdMaster: $app_name,AppCategory: $app_category})"
                                 ,app_name = data['usages'][i]['app_name'],app_category = data['usages'][i]['app_category']
@@ -60,7 +61,7 @@ class data_processor:
     def for_users(tx,data):
         
         
-        
+    #create nodes for all 5 users and operating system node
         result = tx.run("CREATE (u:user{IdMaster: $user_id})  "
                         "CREATE(de:Device{IdMaster: $os}) "
                         "CREATE(BR:Brand{IdMaster: $brand})"
@@ -69,6 +70,7 @@ class data_processor:
                          )
         return result.single()
     @staticmethod
+    #create relationship between all these for one user at a time
     def create_relationship(tx,data):
         
         for i in range(0,6):
@@ -89,8 +91,9 @@ class data_processor:
 
 
 def runit():
-
+#intialize the function my password is "a" and username was "neo4j" 
     intialize = data_processor("bolt://localhost:7687", "neo4j", "a")
+#now for each user load their data in "to_process" variable and then feed to class function intialize.fire_up
     to_process = abhishek()
     intialize.fire_up(to_process)
     to_process = vinit()
@@ -101,4 +104,5 @@ def runit():
     intialize.fire_up(to_process)
     to_process = christian()
     intialize.fire_up(to_process)
+#finally call the function to close after processing all data
     intialize.close()
